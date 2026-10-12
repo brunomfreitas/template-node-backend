@@ -1,0 +1,53 @@
+
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio Local",
+      "options": {
+        "baseURL": "http://127.0.0.1:1234/v1"
+      },
+      "models": {
+        "qwen/qwen3-1.7b": {
+          "name": "Qwen3 1.7B Local",
+          "limit": {
+            "context": 8192,
+            "output": 2048
+          }
+        }
+      }
+    }
+  },
+  "model": "lmstudio/qwen/qwen3-1.7b",
+  "compaction": {
+    "auto": false
+  },
+  "permission": {
+    "edit": "ask",
+    "bash": "ask"
+  },
+  "mcp": {
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp"
+      },
+      "postgres_auditive": {
+        "type": "local",
+        "command": [
+          "npx.cmd",
+          "-y",
+          "mcp-postgres-server"
+        ],
+        "environment": {
+          "DATABASE_URL": "postgresql://cognitio_user:cognitio_password@localhost:5433/cognitio?schema=cognitio"          
+        },
+        "timeout": {
+          "startup": 60000,
+          "catalog": 30000
+        }
+      }
+    }
+  }
+}

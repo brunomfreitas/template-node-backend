@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cognitio: entidades e serviços"
+  short_description: "Cria entidades e use cases no backend Cognitio"
+  default_prompt: "Use $cognitio-criar-modulo para criar a entidade e os serviços descritos no meu pedido, seguindo os padrões atuais do backend."

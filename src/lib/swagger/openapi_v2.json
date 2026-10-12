@@ -1,0 +1,893 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "API Cognitio", "version": "1.0.0" },
+  "servers": [{ "url": "http://localhost:3000" }],
+  "tags": [
+    { "name": "Auth", "description": "Recursos de Auth" },
+    { "name": "Dominio", "description": "Recursos de Dominio" },
+    { "name": "DominioValor", "description": "Recursos de DominioValor" },
+    { "name": "Organizacao", "description": "Recursos de Organizacao" },
+    { "name": "Pessoa", "description": "Recursos de Pessoa" },
+    { "name": "Site", "description": "Recursos de Site" },
+    { "name": "Usuario", "description": "Recursos de Usuario" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    },
+    "schemas": {
+      "Paginated": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "type": "object" } },
+          "page": { "type": "integer", "example": 1 },
+          "pageSize": { "type": "integer", "example": 20 },
+          "total": { "type": "integer", "example": 57 },
+          "totalPages": { "type": "integer", "example": 3 }
+        },
+        "required": ["data", "page", "pageSize", "total", "totalPages"]
+      },
+
+      "Dominio": {
+        "type": "object",
+        "properties": {
+          "id_dominio": { "type": "integer" },
+          "nm_dominio": { "type": "string" },
+          "ds_dominio": { "type": "string" },
+          "ds_alias": { "type": "string" },
+          "id_dominio_sup": { "type": "integer" },
+          "id_dominio_valor_sup": { "type": "integer" },
+          "dt_cadastro": { "type": "string", "format": "date-time" },
+          "dt_atualizacao": { "type": "string", "format": "date-time" },
+          "dt_exclusao": { "type": "string", "format": "date-time" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "CreateDominio": {
+        "type": "object",
+        "properties": {
+          "nm_dominio": { "type": "string" },
+          "ds_dominio": { "type": "string" },
+          "ds_alias": { "type": "string" },
+          "id_dominio_sup": { "type": "integer" },
+          "id_dominio_valor_sup": { "type": "integer" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "UpdateDominio": {
+        "type": "object",
+        "properties": {
+          "id_dominio": { "type": "integer" },
+          "nm_dominio": { "type": "string" },
+          "ds_dominio": { "type": "string" },
+          "ds_alias": { "type": "string" },
+          "id_dominio_sup": { "type": "integer" },
+          "id_dominio_valor_sup": { "type": "integer" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "PaginatedDominio": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Paginated" },
+          {
+            "type": "object",
+            "properties": {
+              "data": { "type": "array", "items": { "$ref": "#/components/schemas/Dominio" } }
+            }
+          }
+        ]
+      },
+
+      "DominioValor": {
+        "type": "object",
+        "properties": {
+          "id_dominio_valor": { "type": "integer" },
+          "id_dominio": { "type": "integer" },
+          "nm_dominio_valor": { "type": "string" },
+          "ds_dominio_valor": { "type": "string" },
+          "dt_cadastro": { "type": "string", "format": "date-time" },
+          "dt_atualizacao": { "type": "string", "format": "date-time" },
+          "dt_exclusao": { "type": "string", "format": "date-time" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "CreateDominioValor": {
+        "type": "object",
+        "properties": {
+          "id_dominio": { "type": "integer" },
+          "nm_dominio_valor": { "type": "string" },
+          "ds_dominio_valor": { "type": "string" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "UpdateDominioValor": {
+        "type": "object",
+        "properties": {
+          "id_dominio_valor": { "type": "integer" },
+          "id_dominio": { "type": "integer" },
+          "nm_dominio_valor": { "type": "string" },
+          "ds_dominio_valor": { "type": "string" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "PaginatedDominioValor": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Paginated" },
+          {
+            "type": "object",
+            "properties": {
+              "data": { "type": "array", "items": { "$ref": "#/components/schemas/DominioValor" } }
+            }
+          }
+        ]
+      },
+
+      "Organizacao": {
+        "type": "object",
+        "properties": {
+          "id_organizacao": { "type": "integer" },
+          "nm_organizacao": { "type": "string" },
+          "dt_cadastro": { "type": "string", "format": "date-time" },
+          "dt_atualizacao": { "type": "string", "format": "date-time" },
+          "dt_exclusao": { "type": "string", "format": "date-time" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "CreateOrganizacao": {
+        "type": "object",
+        "properties": {
+          "nm_organizacao": { "type": "string" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "UpdateOrganizacao": {
+        "type": "object",
+        "properties": {
+          "id_organizacao": { "type": "integer" },
+          "nm_organizacao": { "type": "string" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "PaginatedOrganizacao": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Paginated" },
+          {
+            "type": "object",
+            "properties": {
+              "data": { "type": "array", "items": { "$ref": "#/components/schemas/Organizacao" } }
+            }
+          }
+        ]
+      },
+
+      "Pessoa": {
+        "type": "object",
+        "properties": {
+          "id_pessoa": { "type": "integer" },
+          "nm_pessoa": { "type": "string" },
+          "nr_cpf": { "type": "string" },
+          "id_genero": { "type": "integer" },
+          "dt_nascimento": { "type": "string", "format": "date-time" },
+          "nr_telefone": { "type": "string" },
+          "nm_email": { "type": "string" },
+          "id_organizacao": { "type": "integer" },
+          "id_site": { "type": "integer" },
+          "dt_cadastro": { "type": "string", "format": "date-time" },
+          "dt_atualizacao": { "type": "string", "format": "date-time" },
+          "dt_exclusao": { "type": "string", "format": "date-time" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "CreatePessoa": {
+        "type": "object",
+        "properties": {
+          "nm_pessoa": { "type": "string" },
+          "nr_cpf": { "type": "string" },
+          "id_genero": { "type": "integer" },
+          "nr_telefone": { "type": "string" },
+          "nm_email": { "type": "string" },
+          "id_organizacao": { "type": "integer" },
+          "id_site": { "type": "integer" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "UpdatePessoa": {
+        "type": "object",
+        "properties": {
+          "id_pessoa": { "type": "integer" },
+          "nm_pessoa": { "type": "string" },
+          "nr_cpf": { "type": "string" },
+          "id_genero": { "type": "integer" },
+          "nr_telefone": { "type": "string" },
+          "nm_email": { "type": "string" },
+          "id_organizacao": { "type": "integer" },
+          "id_site": { "type": "integer" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "PaginatedPessoa": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Paginated" },
+          {
+            "type": "object",
+            "properties": {
+              "data": { "type": "array", "items": { "$ref": "#/components/schemas/Pessoa" } }
+            }
+          }
+        ]
+      },
+
+      "Site": {
+        "type": "object",
+        "properties": {
+          "id_site": { "type": "integer" },
+          "nm_site": { "type": "string" },
+          "id_organizacao": { "type": "integer" },
+          "dt_cadastro": { "type": "string", "format": "date-time" },
+          "dt_atualizacao": { "type": "string", "format": "date-time" },
+          "dt_exclusao": { "type": "string", "format": "date-time" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "CreateSite": {
+        "type": "object",
+        "properties": {
+          "nm_site": { "type": "string" },
+          "id_organizacao": { "type": "integer" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "UpdateSite": {
+        "type": "object",
+        "properties": {
+          "id_site": { "type": "integer" },
+          "nm_site": { "type": "string" },
+          "id_organizacao": { "type": "integer" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "PaginatedSite": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Paginated" },
+          {
+            "type": "object",
+            "properties": {
+              "data": { "type": "array", "items": { "$ref": "#/components/schemas/Site" } }
+            }
+          }
+        ]
+      },
+
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id_usuario": { "type": "integer" },
+          "id_pessoa": { "type": "integer" },
+          "login": { "type": "string" },
+          "password": { "type": "string" },
+          "dt_cadastro": { "type": "string", "format": "date-time" },
+          "dt_atualizacao": { "type": "string", "format": "date-time" },
+          "dt_exclusao": { "type": "string", "format": "date-time" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "CreateUsuario": {
+        "type": "object",
+        "properties": {
+          "id_pessoa": { "type": "integer" },
+          "login": { "type": "string" },
+          "password": { "type": "string" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "UpdateUsuario": {
+        "type": "object",
+        "properties": {
+          "id_usuario": { "type": "integer" },
+          "id_pessoa": { "type": "integer" },
+          "login": { "type": "string" },
+          "password": { "type": "string" },
+          "st_ativo": { "type": "boolean" }
+        }
+      },
+      "PaginatedUsuario": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Paginated" },
+          {
+            "type": "object",
+            "properties": {
+              "data": { "type": "array", "items": { "$ref": "#/components/schemas/Usuario" } }
+            }
+          }
+        ]
+      },
+
+      "AuthLoginRequest": {
+        "type": "object",
+        "properties": {
+          "login": { "type": "string", "minLength": 3, "example": "admin" },
+          "password": { "type": "string", "minLength": 6, "example": "123456" }
+        },
+        "required": ["login", "password"]
+      },
+      "AuthLoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string", "example": "eyJhbGciOi..." },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer", "example": 1 },
+              "login": { "type": "string", "example": "admin" },
+              "id_pessoa": { "type": "integer", "example": 10 }
+            },
+            "required": ["id", "login", "id_pessoa"]
+          }
+        },
+        "required": ["token", "user"]
+      },
+      "AuthRegisterRequest": {
+        "type": "object",
+        "properties": {
+          "login": { "type": "string", "minLength": 3, "example": "novo" },
+          "password": { "type": "string", "minLength": 6, "example": "123456" },
+          "id_pessoa": { "type": "integer", "minimum": 1, "example": 10 }
+        },
+        "required": ["login", "password", "id_pessoa"]
+      },
+      "AuthRegisterResponse": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string" },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "login": { "type": "string" },
+              "id_pessoa": { "type": "integer" }
+            },
+            "required": ["id", "login", "id_pessoa"]
+          }
+        },
+        "required": ["token", "user"]
+      },
+      "AuthMeResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "login": { "type": "string" },
+          "id_pessoa": { "type": "integer" }
+        },
+        "required": ["id", "login", "id_pessoa"]
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Registrar usuário",
+        "tags": ["Auth"],
+        "security": [],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthRegisterRequest" } } } },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthRegisterResponse" } } } },
+          "404": { "description": "Person not found" },
+          "409": { "description": "Login already in use" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login",
+        "tags": ["Auth"],
+        "security": [],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthLoginRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthLoginResponse" } } } },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Detalhes do usuário autenticado",
+        "tags": ["Auth"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthMeResponse" } } } },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+
+    "/dominio": {
+      "post": {
+        "summary": "Criar Dominio",
+        "tags": ["Dominio"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateDominio" } } } },
+        "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dominio" } } } } }
+      },
+      "get": {
+        "summary": "Buscar/Filtrar Dominio (paginado)",
+        "tags": ["Dominio"],
+        "parameters": [
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "required": false, "description": "Termo de busca (nm_dominio, ds_dominio, ds_alias)" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1, "default": 1 }, "required": false },
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }, "required": false },
+          { "in": "query", "name": "orderBy", "schema": { "type": "string", "default": "nm_dominio" }, "required": false },
+          { "in": "query", "name": "orderDir", "schema": { "type": "string", "enum": ["asc","desc"], "default": "asc" }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedDominio" } } } } }
+      }
+    },
+    "/dominio/all": {
+      "get": {
+        "summary": "Listar todos Dominio (use /dominio com pageSize alto)",
+        "deprecated": true,
+        "tags": ["Dominio"],
+        "parameters": [
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 1000 }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedDominio" } } } } }
+      }
+    },
+    "/dominio/editar/{id}": {
+      "get": {
+        "summary": "Buscar Dominio para edição por ID",
+        "tags": ["Dominio"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dominio" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar Dominio",
+        "tags": ["Dominio"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateDominio" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dominio" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/dominio/visualizar/{id}": {
+      "get": {
+        "summary": "Buscar Dominio para visualização por ID",
+        "tags": ["Dominio"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dominio" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/dominio/{id}": {
+      "delete": {
+        "summary": "Excluir Dominio",
+        "tags": ["Dominio"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "204": { "description": "No Content" }, "404": { "description": "Não encontrado" } }
+      }
+    },
+
+    "/dominio-valor": {
+      "post": {
+        "summary": "Criar DominioValor",
+        "tags": ["DominioValor"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateDominioValor" } } } },
+        "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DominioValor" } } } } }
+      },
+      "get": {
+        "summary": "Buscar/Filtrar DominioValor (paginado)",
+        "tags": ["DominioValor"],
+        "parameters": [
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "required": false, "description": "Termo de busca (nm_dominio_valor, ds_dominio_valor)" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1, "default": 1 }, "required": false },
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }, "required": false },
+          { "in": "query", "name": "orderBy", "schema": { "type": "string", "default": "nm_dominio_valor" }, "required": false },
+          { "in": "query", "name": "orderDir", "schema": { "type": "string", "enum": ["asc","desc"], "default": "asc" }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false },
+          { "in": "query", "name": "id_dominio", "schema": { "type": "integer" }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedDominioValor" } } } } }
+      }
+    },
+    "/dominio-valor/all": {
+      "get": {
+        "summary": "Listar todos DominioValor (use /dominio-valor com pageSize alto)",
+        "deprecated": true,
+        "tags": ["DominioValor"],
+        "parameters": [
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 1000 }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false },
+          { "in": "query", "name": "id_dominio", "schema": { "type": "integer" }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedDominioValor" } } } } }
+      }
+    },
+    "/dominio-valor/editar/{id}": {
+      "get": {
+        "summary": "Buscar DominioValor para edição por ID",
+        "tags": ["DominioValor"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DominioValor" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar DominioValor",
+        "tags": ["DominioValor"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateDominioValor" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DominioValor" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/dominio-valor/visualizar/{id}": {
+      "get": {
+        "summary": "Buscar DominioValor para visualização por ID",
+        "tags": ["DominioValor"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DominioValor" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/dominio-valor/{id}": {
+      "delete": {
+        "summary": "Excluir DominioValor",
+        "tags": ["DominioValor"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "204": { "description": "No Content" }, "404": { "description": "Não encontrado" } }
+      }
+    },
+
+    "/organizacao": {
+      "post": {
+        "summary": "Criar Organizacao",
+        "tags": ["Organizacao"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateOrganizacao" } } } },
+        "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Organizacao" } } } } }
+      },
+      "get": {
+        "summary": "Buscar/Filtrar Organização (paginado)",
+        "tags": ["Organizacao"],
+        "parameters": [
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "required": false, "description": "Termo de busca (nm_organizacao)" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1, "default": 1 }, "required": false },
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }, "required": false },
+          { "in": "query", "name": "orderBy", "schema": { "type": "string", "default": "nm_organizacao" }, "required": false },
+          { "in": "query", "name": "orderDir", "schema": { "type": "string", "enum": ["asc","desc"], "default": "asc" }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false },
+          { "in": "query", "name": "id_site", "schema": { "type": "integer" }, "required": false }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedOrganizacao" } } }
+          }
+        }
+      }
+    },
+    "/organizacao/all": {
+      "get": {
+        "summary": "Listar todas as organizações (use /organizacao com pageSize alto)",
+        "deprecated": true,
+        "tags": ["Organizacao"],
+        "parameters": [
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 1000 }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedOrganizacao" } } } } }
+      }
+    },
+    "/organizacao/editar/{id}": {
+      "get": {
+        "summary": "Buscar Organizacao para edição por ID",
+        "tags": ["Organizacao"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Organizacao" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar Organizacao",
+        "tags": ["Organizacao"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateOrganizacao" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Organizacao" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/organizacao/visualizar/{id}": {
+      "get": {
+        "summary": "Buscar Organizacao para visualização por ID",
+        "tags": ["Organizacao"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Organizacao" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/organizacao/{id}": {
+      "delete": {
+        "summary": "Excluir Organizacao",
+        "tags": ["Organizacao"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "204": { "description": "No Content" }, "404": { "description": "Não encontrado" } }
+      }
+    },
+    "/organizacao/search": {
+      "get": {
+        "summary": "Pesquisar Organização (RAW expr)",
+        "tags": ["Organizacao"],
+        "parameters": [
+          { "in": "query", "name": "expr", "schema": { "type": "string" }, "required": false, "description": "Expressão WHERE literal. Ex.: nm_organizacao ilike '%ESCU%' AND st_ativo = true" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 }, "required": false, "description": "Página (default 1)" },
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 100 }, "required": false, "description": "Itens por página (default 20)" },
+          { "in": "query", "name": "orderBy", "schema": { "type": "string" }, "required": false, "description": "Coluna para ordenação (ex.: nm_organizacao)" },
+          { "in": "query", "name": "orderDir", "schema": { "type": "string", "enum": ["asc","desc"] }, "required": false, "description": "Direção da ordenação (default asc)" },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean" }, "required": false, "description": "Se true, acrescenta AND st_ativo = true" }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Organizacao" } } } } }
+      }
+	},
+    "/pessoa": {
+      "post": {
+        "summary": "Criar Pessoa",
+        "tags": ["Pessoa"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreatePessoa" } } } },
+        "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Pessoa" } } } } }
+      },
+      "get": {
+        "summary": "Buscar/Filtrar Pessoa (paginado)",
+        "tags": ["Pessoa"],
+        "parameters": [
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "required": false, "description": "Termo de busca (nm_pessoa, nr_cpf, nm_email, nr_telefone)" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1, "default": 1 }, "required": false },
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }, "required": false },
+          { "in": "query", "name": "orderBy", "schema": { "type": "string", "default": "nm_pessoa" }, "required": false },
+          { "in": "query", "name": "orderDir", "schema": { "type": "string", "enum": ["asc","desc"], "default": "asc" }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false },
+          { "in": "query", "name": "id_organizacao", "schema": { "type": "integer" }, "required": false },
+          { "in": "query", "name": "id_site", "schema": { "type": "integer" }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedPessoa" } } } } }
+      }
+    },
+    "/pessoa/all": {
+      "get": {
+        "summary": "Listar todos Pessoa (use /pessoa com pageSize alto)",
+        "deprecated": true,
+        "tags": ["Pessoa"],
+        "parameters": [
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 1000 }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedPessoa" } } } } }
+      }
+    },
+    "/pessoa/editar/{id}": {
+      "get": {
+        "summary": "Buscar Pessoa para edição por ID",
+        "tags": ["Pessoa"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Pessoa" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar Pessoa",
+        "tags": ["Pessoa"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdatePessoa" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Pessoa" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/pessoa/visualizar/{id}": {
+      "get": {
+        "summary": "Buscar Pessoa para visualização por ID",
+        "tags": ["Pessoa"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Pessoa" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/pessoa/{id}": {
+      "delete": {
+        "summary": "Excluir Pessoa",
+        "tags": ["Pessoa"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "204": { "description": "No Content" }, "404": { "description": "Não encontrado" } }
+      }
+    },
+
+    "/site": {
+      "post": {
+        "summary": "Criar Site",
+        "tags": ["Site"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateSite" } } } },
+        "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Site" } } } } }
+      },
+      "get": {
+        "summary": "Buscar/Filtrar Site (paginado)",
+        "tags": ["Site"],
+        "parameters": [
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "required": false, "description": "Termo de busca (nm_site)" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1, "default": 1 }, "required": false },
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }, "required": false },
+          { "in": "query", "name": "orderBy", "schema": { "type": "string", "default": "nm_site" }, "required": false },
+          { "in": "query", "name": "orderDir", "schema": { "type": "string", "enum": ["asc","desc"], "default": "asc" }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false },
+          { "in": "query", "name": "id_organizacao", "schema": { "type": "integer" }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedSite" } } } } }
+      }
+    },
+    "/site/all": {
+      "get": {
+        "summary": "Listar todos Site (use /site com pageSize alto)",
+        "deprecated": true,
+        "tags": ["Site"],
+        "parameters": [
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 1000 }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedSite" } } } } }
+      }
+    },
+    "/site/editar/{id}": {
+      "get": {
+        "summary": "Buscar Site para edição por ID",
+        "tags": ["Site"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Site" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar Site",
+        "tags": ["Site"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateSite" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Site" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/site/visualizar/{id}": {
+      "get": {
+        "summary": "Buscar Site para visualização por ID",
+        "tags": ["Site"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Site" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/site/{id}": {
+      "delete": {
+        "summary": "Excluir Site",
+        "tags": ["Site"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "204": { "description": "No Content" }, "404": { "description": "Não encontrado" } }
+      }
+    },
+
+    "/usuario": {
+      "post": {
+        "summary": "Criar Usuario",
+        "tags": ["Usuario"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateUsuario" } } } },
+        "responses": { "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Usuario" } } } } }
+      },
+      "get": {
+        "summary": "Buscar/Filtrar Usuario (paginado)",
+        "tags": ["Usuario"],
+        "parameters": [
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "required": false, "description": "Termo de busca (login)" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1, "default": 1 }, "required": false },
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }, "required": false },
+          { "in": "query", "name": "orderBy", "schema": { "type": "string", "default": "login" }, "required": false },
+          { "in": "query", "name": "orderDir", "schema": { "type": "string", "enum": ["asc","desc"], "default": "asc" }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false },
+          { "in": "query", "name": "id_pessoa", "schema": { "type": "integer" }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedUsuario" } } } } }
+      }
+    },
+    "/usuario/all": {
+      "get": {
+        "summary": "Listar todos Usuario (use /usuario com pageSize alto)",
+        "deprecated": true,
+        "tags": ["Usuario"],
+        "parameters": [
+          { "in": "query", "name": "pageSize", "schema": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 1000 }, "required": false },
+          { "in": "query", "name": "onlyActive", "schema": { "type": "boolean", "default": true }, "required": false }
+        ],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedUsuario" } } } } }
+      }
+    },
+    "/usuario/editar/{id}": {
+      "get": {
+        "summary": "Buscar Usuario para edição por ID",
+        "tags": ["Usuario"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Usuario" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar Usuario",
+        "tags": ["Usuario"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUsuario" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Usuario" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/usuario/visualizar/{id}": {
+      "get": {
+        "summary": "Buscar Usuario para visualização por ID",
+        "tags": ["Usuario"],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Usuario" } } } },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/usuario/{id}": {
+      "delete": {
+        "summary": "Excluir Usuario",
+        "tags": ["Usuario"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "204": { "description": "No Content" }, "404": { "description": "Não encontrado" } }
+      }
+    }
+  }
+}

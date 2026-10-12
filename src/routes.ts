@@ -1,0 +1,53 @@
+import OrganizacaoRouter from '@/http/controllers/organizacao/organizacao.routes';
+import PessoaRouter from '@/http/controllers/pessoa/pessoa.routes';
+import { Router } from 'express';
+import aplicacaoRouter from './http/controllers/aplicacao/aplicacao.routes';
+import authRouter from './http/controllers/auth/auth.routes';
+import dominioValorRouter from './http/controllers/dominio-valor/dominio-valor.routes';
+import dominioRouter from './http/controllers/dominio/dominio.routes';
+import empresaPessoaRouter from './http/controllers/empresa-pessoa/empresa-pessoa.routes';
+import empresaRouter from './http/controllers/empresa/empresa.routes';
+import figuraFundoRouter from './http/controllers/figura-fundo/figura-fundo.routes';
+import grupoAplicacaoPermissaoRouter from './http/controllers/grupo-aplicacao-permissao/grupo-aplicacao-permissao.routes';
+import grupoAplicacaoRestricaoRouter from './http/controllers/grupo-aplicacao-restricao/grupo-aplicacao-restricao.routes';
+import grupoAplicacaoRouter from './http/controllers/grupo-aplicacao/grupo-aplicacao.routes';
+import grupoSegurancaRouter from './http/controllers/grupo-seguranca/grupo-seguranca.routes';
+import grupoSiteRouter from './http/controllers/grupo-site/grupo-site.routes';
+import grupoUsuarioRouter from './http/controllers/grupo-usuario/grupo-usuario.routes';
+import pacRouter from './http/controllers/pac/pac.routes';
+import companyRouter from './http/controllers/company/company.routes';
+import perguntaRouter from './http/controllers/pergunta/pergunta.routes';
+import prontuarioPerguntaRouter from './http/controllers/prontuario-pergunta/prontuario-pergunta.routes';
+import prontuarioRouter from './http/controllers/prontuario/prontuario.routes';
+import siteRouter from './http/controllers/site/site.routes';
+import usuarioRouter from './http/controllers/usuario/usuario.routes';
+import { requireAuth } from './http/middlewares/require-auth';
+
+const router = Router();
+
+router.use('/auth', authRouter);
+router.use(requireAuth);
+router.use('/organizacao', OrganizacaoRouter);
+router.use('/pessoa', PessoaRouter);
+router.use('/dominio', dominioRouter);
+router.use('/dominio-valor', dominioValorRouter);
+router.use('/usuario', usuarioRouter);
+router.use('/site', siteRouter);
+router.use('/empresa', empresaRouter);
+router.use('/empresa-pessoa', empresaPessoaRouter);
+router.use('/aplicacao', aplicacaoRouter);
+router.use('/grupo-seguranca', grupoSegurancaRouter);
+router.use('/grupo-usuario', grupoUsuarioRouter);
+router.use('/grupo-site', grupoSiteRouter);
+router.use('/grupo-aplicacao', grupoAplicacaoRouter);
+router.use('/grupo-aplicacao-permissao', grupoAplicacaoPermissaoRouter);
+router.use('/grupo-aplicacao-restricao', grupoAplicacaoRestricaoRouter);
+router.use('/prontuario', prontuarioRouter);
+router.use('/figura-fundo', figuraFundoRouter);
+router.use('/pergunta', perguntaRouter);
+router.use('/prontuario-pergunta', prontuarioPerguntaRouter);
+router.use('/pac', pacRouter);
+router.use('/company', companyRouter);
+
+export { router };
+

@@ -1,0 +1,341 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model pessoa {
+  id_pessoa      Int              @id @default(autoincrement())
+  nm_pessoa      String           @db.VarChar(200)
+  nr_cpf         String?          @db.VarChar(14)
+  id_genero      Int
+  dt_nascimento  DateTime         @db.Date
+  nr_telefone    String?          @db.VarChar(15)
+  nm_email       String?          @db.VarChar(100)
+  id_organizacao Int
+  id_site        Int
+  dt_cadastro    DateTime         @default(now()) @db.Timestamp(6)
+  dt_atualizacao DateTime?        @db.Timestamp(6)
+  dt_exclusao    DateTime?        @db.Timestamp(6)
+  st_ativo       Boolean          @default(true)
+  empresa        empresa[]
+  empresa_pessoa empresa_pessoa[]
+  dominio_valor  dominio_valor    @relation(fields: [id_genero], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  organizacao    organizacao      @relation(fields: [id_organizacao], references: [id_organizacao], onDelete: NoAction, onUpdate: NoAction)
+  site           site             @relation(fields: [id_site], references: [id_site], onDelete: NoAction, onUpdate: NoAction)
+  prontuario     prontuario[]
+  usuario        usuario[]
+}
+
+model usuario {
+  id_usuario     Int             @id @default(autoincrement())
+  id_pessoa      Int
+  login          String          @unique(map: "idx_usuario_login_unique") @db.VarChar(50)
+  password       String          @db.VarChar(200)
+  dt_cadastro    DateTime        @default(now()) @db.Timestamp(6)
+  dt_atualizacao DateTime?       @db.Timestamp(6)
+  dt_exclusao    DateTime?       @db.Timestamp(6)
+  st_ativo       Boolean         @default(true)
+  grupo_usuario  grupo_usuario[]
+  pessoa         pessoa          @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model organizacao {
+  id_organizacao Int              @id @default(autoincrement())
+  nm_organizacao String           @db.VarChar(200)
+  dt_cadastro    DateTime         @default(now()) @db.Timestamp(6)
+  dt_atualizacao DateTime?        @db.Timestamp(6)
+  dt_exclusao    DateTime?        @db.Timestamp(6)
+  st_ativo       Boolean          @default(true)
+  empresa        empresa[]
+  empresa_pessoa empresa_pessoa[]
+  pessoa         pessoa[]
+  prontuario     prontuario[]
+  site           site[]
+}
+
+model dominio {
+  id_dominio           Int             @id @default(autoincrement())
+  nm_dominio           String          @db.VarChar(50)
+  ds_dominio           String?         @db.VarChar(200)
+  ds_alias             String?         @db.VarChar(50)
+  id_dominio_sup       Int?
+  id_dominio_valor_sup Int?
+  dt_cadastro          DateTime        @default(now()) @db.Timestamp(6)
+  dt_atualizacao       DateTime?       @db.Timestamp(6)
+  dt_exclusao          DateTime?       @db.Timestamp(6)
+  st_ativo             Boolean         @default(true)
+  dominio_valor        dominio_valor[]
+  pergunta             pergunta[]
+
+  @@index([st_ativo, id_dominio], map: "idx_dominio_ativo_id")
+}
+
+model dominio_valor {
+  id_dominio_valor                                       Int                   @id @default(autoincrement())
+  id_dominio                                             Int
+  nm_dominio_valor                                       String                @db.VarChar(20)
+  ds_dominio_valor                                       String?               @db.VarChar(200)
+  dt_cadastro                                            DateTime              @default(now()) @db.Timestamp(6)
+  dt_atualizacao                                         DateTime?             @db.Timestamp(6)
+  dt_exclusao                                            DateTime?             @db.Timestamp(6)
+  st_ativo                                               Boolean               @default(true)
+  dominio                                                dominio               @relation(fields: [id_dominio], references: [id_dominio], onDelete: NoAction, onUpdate: NoAction)
+  empresa                                                empresa[]
+  empresa_pessoa                                         empresa_pessoa[]
+  pergunta                                               pergunta[]
+  pessoa                                                 pessoa[]
+  prontuario_prontuario_cs_serieTodominio_valor          prontuario[]          @relation("prontuario_cs_serieTodominio_valor")
+  prontuario_prontuario_cs_turnoTodominio_valor          prontuario[]          @relation("prontuario_cs_turnoTodominio_valor")
+  prontuario_prontuario_id_escolaTodominio_valor         prontuario[]          @relation("prontuario_id_escolaTodominio_valor")
+  prontuario_prontuario_id_st_atendimentoTodominio_valor prontuario[]          @relation("prontuario_id_st_atendimentoTodominio_valor")
+  prontuario_prontuario_id_st_prontuarioTodominio_valor  prontuario[]          @relation("prontuario_id_st_prontuarioTodominio_valor")
+  prontuario_pergunta                                    prontuario_pergunta[]
+}
+
+model site {
+  id_site        Int              @id @default(autoincrement())
+  nm_site        String           @db.VarChar(200)
+  id_organizacao Int
+  dt_cadastro    DateTime         @default(now()) @db.Timestamp(6)
+  dt_atualizacao DateTime?        @db.Timestamp(6)
+  dt_exclusao    DateTime?        @db.Timestamp(6)
+  st_ativo       Boolean          @default(true)
+  empresa        empresa[]
+  empresa_pessoa empresa_pessoa[]
+  grupo_site     grupo_site[]
+  pessoa         pessoa[]
+  prontuario     prontuario[]
+  organizacao    organizacao      @relation(fields: [id_organizacao], references: [id_organizacao], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model aplicacao {
+  id_aplicacao    Int               @id @default(autoincrement())
+  cd_aplicacao    String            @db.VarChar(50)
+  nm_aplicacao    String            @db.VarChar(250)
+  dt_cadastro     DateTime          @default(now()) @db.Timestamp(6)
+  dt_atualizacao  DateTime?         @db.Timestamp(6)
+  dt_exclusao     DateTime?         @db.Timestamp(6)
+  st_ativo        Boolean           @default(true)
+  grupo_aplicacao grupo_aplicacao[]
+}
+
+model company {
+  id_company      Int              @id @default(autoincrement())
+  nr_cnpj         String           @db.VarChar(14)
+  nm_company      String           @db.VarChar(250)
+  ds_sector       String           @db.VarChar(250)
+  ds_subsector    String           @db.VarChar(250)
+  ds_segment      String           @db.VarChar(250)
+  dt_cadastro     DateTime         @default(now()) @db.Timestamp(6)
+  dt_atualizacao  DateTime?        @db.Timestamp(6)
+  dt_exclusao     DateTime?        @db.Timestamp(6)
+  st_ativo        Boolean          @default(true)
+}
+
+model empresa {
+  id_empresa            Int              @id @default(autoincrement())
+  nm_empresa            String           @db.VarChar(200)
+  nr_cnpj               String?          @db.VarChar(14)
+  nr_telefone           String?          @db.VarChar(15)
+  nm_email              String?          @db.VarChar(100)
+  id_tipo_empresa       Int
+  id_pessoa_responsavel Int?
+  id_organizacao        Int
+  id_site               Int
+  dt_cadastro           DateTime         @default(now()) @db.Timestamp(6)
+  dt_atualizacao        DateTime?        @db.Timestamp(6)
+  dt_exclusao           DateTime?        @db.Timestamp(6)
+  st_ativo              Boolean          @default(true)
+  organizacao           organizacao      @relation(fields: [id_organizacao], references: [id_organizacao], onDelete: NoAction, onUpdate: NoAction)
+  pessoa                pessoa?          @relation(fields: [id_pessoa_responsavel], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+  site                  site             @relation(fields: [id_site], references: [id_site], onDelete: NoAction, onUpdate: NoAction)
+  dominio_valor         dominio_valor    @relation(fields: [id_tipo_empresa], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  empresa_pessoa        empresa_pessoa[]
+}
+
+model empresa_pessoa {
+  id_empresa_pessoa                                      Int           @id @default(autoincrement())
+  id_empresa                                             Int
+  id_pessoa                                              Int
+  id_funcao                                              Int
+  id_organizacao                                         Int
+  id_site                                                Int
+  dt_cadastro                                            DateTime      @default(now()) @db.Timestamp(6)
+  dt_atualizacao                                         DateTime?     @db.Timestamp(6)
+  dt_exclusao                                            DateTime?     @db.Timestamp(6)
+  st_ativo                                               Boolean       @default(true)
+  empresa                                                empresa       @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  dominio_valor                                          dominio_valor @relation(fields: [id_funcao], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  organizacao                                            organizacao   @relation(fields: [id_organizacao], references: [id_organizacao], onDelete: NoAction, onUpdate: NoAction)
+  pessoa                                                 pessoa        @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+  site                                                   site          @relation(fields: [id_site], references: [id_site], onDelete: NoAction, onUpdate: NoAction)
+  prontuario_prontuario_id_assistenteToempresa_pessoa    prontuario[]  @relation("prontuario_id_assistenteToempresa_pessoa")
+  prontuario_prontuario_id_fonoaudiologoToempresa_pessoa prontuario[]  @relation("prontuario_id_fonoaudiologoToempresa_pessoa")
+}
+
+model grupo_aplicacao {
+  id_grupo_aplicacao        Int                         @id @default(autoincrement())
+  id_grupo_seguranca        Int
+  id_aplicacao              Int
+  dt_cadastro               DateTime                    @default(now()) @db.Timestamp(6)
+  aplicacao                 aplicacao                   @relation(fields: [id_aplicacao], references: [id_aplicacao], onDelete: NoAction, onUpdate: NoAction)
+  grupo_seguranca           grupo_seguranca             @relation(fields: [id_grupo_seguranca], references: [id_grupo_seguranca], onDelete: NoAction, onUpdate: NoAction)
+  grupo_aplicacao_permissao grupo_aplicacao_permissao[]
+  grupo_aplicacao_restricao grupo_aplicacao_restricao[]
+}
+
+model grupo_aplicacao_permissao {
+  id_grupo_aplicacao_permissao Int             @id @default(autoincrement())
+  id_grupo_aplicacao           Int
+  cs_ler                       Boolean         @default(false)
+  cs_criar                     Boolean         @default(false)
+  cs_editar                    Boolean         @default(false)
+  cs_excluir                   Boolean         @default(false)
+  dt_cadastro                  DateTime        @default(now()) @db.Timestamp(6)
+  dt_atualizacao               DateTime?       @db.Timestamp(6)
+  grupo_aplicacao              grupo_aplicacao @relation(fields: [id_grupo_aplicacao], references: [id_grupo_aplicacao], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model grupo_aplicacao_restricao {
+  id_grupo_aplicacao_restricao Int             @id @default(autoincrement())
+  id_grupo_aplicacao           Int
+  ds_clausula_where            String?         @db.VarChar(1000)
+  dt_cadastro                  DateTime        @default(now()) @db.Timestamp(6)
+  dt_atualizacao               DateTime?       @db.Timestamp(6)
+  grupo_aplicacao              grupo_aplicacao @relation(fields: [id_grupo_aplicacao], references: [id_grupo_aplicacao], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model grupo_seguranca {
+  id_grupo_seguranca Int               @id @default(autoincrement())
+  nm_grupo_seguranca String            @db.VarChar(250)
+  dt_cadastro        DateTime          @default(now()) @db.Timestamp(6)
+  dt_atualizacao     DateTime?         @db.Timestamp(6)
+  dt_exclusao        DateTime?         @db.Timestamp(6)
+  st_ativo           Boolean           @default(true)
+  grupo_aplicacao    grupo_aplicacao[]
+  grupo_site         grupo_site[]
+  grupo_usuario      grupo_usuario[]
+}
+
+model grupo_site {
+  id_grupo_site      Int             @id @default(autoincrement())
+  id_grupo_seguranca Int
+  id_site            Int
+  dt_cadastro        DateTime        @default(now()) @db.Timestamp(6)
+  grupo_seguranca    grupo_seguranca @relation(fields: [id_grupo_seguranca], references: [id_grupo_seguranca], onDelete: NoAction, onUpdate: NoAction)
+  site               site            @relation(fields: [id_site], references: [id_site], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model grupo_usuario {
+  id_grupo_usuario   Int             @id @default(autoincrement())
+  id_grupo_seguranca Int
+  id_usuario         Int
+  dt_cadastro        DateTime        @default(now()) @db.Timestamp(6)
+  grupo_seguranca    grupo_seguranca @relation(fields: [id_grupo_seguranca], references: [id_grupo_seguranca], onDelete: NoAction, onUpdate: NoAction)
+  usuario            usuario         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model figura_fundo {
+  id_figura_fundo            Int      @id @default(autoincrement())
+  ds_figura_fundo            String?  @db.VarChar(200)
+  cs_recusa                  Boolean?
+  st_figura_1_identificada   Boolean?
+  st_figura_2_identificada   Boolean?
+  st_figura_3_identificada   Boolean?
+  st_figura_4_identificada   Boolean?
+  st_figura_5_identificada   Boolean?
+  st_figura_6_identificada   Boolean?
+  st_figura_7_identificada   Boolean?
+  st_figura_8_identificada   Boolean?
+  ss_tempo_resposta_figura_1 Int?
+  ss_tempo_resposta_figura_2 Int?
+  ss_tempo_resposta_figura_3 Int?
+  ss_tempo_resposta_figura_4 Int?
+  ss_tempo_resposta_figura_5 Int?
+  ss_tempo_resposta_figura_6 Int?
+  ss_tempo_resposta_figura_7 Int?
+  ss_tempo_resposta_figura_8 Int?
+  cs_tipo                    String?  @db.Char(1)
+  pac                        pac[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model prontuario {
+  id_prontuario                                              Int                   @id @default(autoincrement())
+  ds_prontuario                                              String?               @db.VarChar(200)
+  dh_inicio_atendimento                                      DateTime?             @db.Timestamp(6)
+  dh_termino_atendimento                                     DateTime?             @db.Timestamp(6)
+  id_paciente                                                Int
+  nm_responsavel                                             String?               @db.VarChar(250)
+  nr_telefone_responsavel                                    String?               @db.VarChar(15)
+  ds_declaracao_responsavel                                  String?               @db.VarChar(3000)
+  id_escola                                                  Int?
+  cs_serie                                                   Int?
+  cs_turno                                                   Int?
+  id_fonoaudiologo                                           Int
+  id_assistente                                              Int?
+  id_organizacao                                             Int
+  id_site                                                    Int
+  id_st_prontuario                                           Int
+  id_st_atendimento                                          Int
+  st_ativo                                                   Boolean?              @default(true)
+  dt_cadastro                                                DateTime              @default(now()) @db.Timestamp(6)
+  dt_atualizacao                                             DateTime?             @db.Timestamp(6)
+  dt_exclusao                                                DateTime?             @db.Timestamp(6)
+  pac                                                        pac[]
+  dominio_valor_prontuario_cs_serieTodominio_valor           dominio_valor?        @relation("prontuario_cs_serieTodominio_valor", fields: [cs_serie], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  dominio_valor_prontuario_cs_turnoTodominio_valor           dominio_valor?        @relation("prontuario_cs_turnoTodominio_valor", fields: [cs_turno], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  empresa_pessoa_prontuario_id_assistenteToempresa_pessoa    empresa_pessoa?       @relation("prontuario_id_assistenteToempresa_pessoa", fields: [id_assistente], references: [id_empresa_pessoa], onDelete: NoAction, onUpdate: NoAction)
+  dominio_valor_prontuario_id_escolaTodominio_valor          dominio_valor?        @relation("prontuario_id_escolaTodominio_valor", fields: [id_escola], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  empresa_pessoa_prontuario_id_fonoaudiologoToempresa_pessoa empresa_pessoa        @relation("prontuario_id_fonoaudiologoToempresa_pessoa", fields: [id_fonoaudiologo], references: [id_empresa_pessoa], onDelete: NoAction, onUpdate: NoAction)
+  organizacao                                                organizacao           @relation(fields: [id_organizacao], references: [id_organizacao], onDelete: NoAction, onUpdate: NoAction)
+  pessoa                                                     pessoa                @relation(fields: [id_paciente], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+  site                                                       site                  @relation(fields: [id_site], references: [id_site], onDelete: NoAction, onUpdate: NoAction)
+  dominio_valor_prontuario_id_st_atendimentoTodominio_valor  dominio_valor         @relation("prontuario_id_st_atendimentoTodominio_valor", fields: [id_st_atendimento], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction, map: "fk_prontuario_atendimento")
+  dominio_valor_prontuario_id_st_prontuarioTodominio_valor   dominio_valor         @relation("prontuario_id_st_prontuarioTodominio_valor", fields: [id_st_prontuario], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  prontuario_pergunta                                        prontuario_pergunta[]
+}
+
+model pac {
+  id_pac                 Int           @id @default(autoincrement())
+  id_prontuario          Int
+  id_figura_fundo        Int?
+  id_localizacao_sonora  Int?
+  id_dicotico_digitos    Int?
+  id_ordenacao_temporal  Int?
+  id_dicotico_sequencial Int?
+  id_resolucao_temporal  Int?
+  figura_fundo           figura_fundo? @relation(fields: [id_figura_fundo], references: [id_figura_fundo], onDelete: NoAction, onUpdate: NoAction)
+  prontuario             prontuario    @relation(fields: [id_prontuario], references: [id_prontuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model pergunta {
+  id_pergunta         Int                   @id @default(autoincrement())
+  ds_pergunta         String?               @db.VarChar(300)
+  ct_pergunta         Int
+  id_resposta         Int
+  dt_cadastro         DateTime              @default(now()) @db.Timestamp(6)
+  dt_atualizacao      DateTime?             @db.Timestamp(6)
+  dt_exclusao         DateTime?             @db.Timestamp(6)
+  st_ativo            Boolean?              @default(true)
+  dominio_valor       dominio_valor         @relation(fields: [ct_pergunta], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+  dominio             dominio               @relation(fields: [id_resposta], references: [id_dominio], onDelete: NoAction, onUpdate: NoAction)
+  prontuario_pergunta prontuario_pergunta[]
+}
+
+model prontuario_pergunta {
+  id_prontuario_pergunta Int           @id @default(autoincrement())
+  id_prontuario          Int
+  id_pergunta            Int
+  id_resposta            Int
+  dt_cadastro            DateTime      @default(now()) @db.Timestamp(6)
+  dt_exclusao            DateTime?     @db.Timestamp(6)
+  st_ativo               Boolean?      @default(true)
+  pergunta               pergunta      @relation(fields: [id_pergunta], references: [id_pergunta], onDelete: NoAction, onUpdate: NoAction)
+  prontuario             prontuario    @relation(fields: [id_prontuario], references: [id_prontuario], onDelete: NoAction, onUpdate: NoAction)
+  dominio_valor          dominio_valor @relation(fields: [id_resposta], references: [id_dominio_valor], onDelete: NoAction, onUpdate: NoAction)
+}
